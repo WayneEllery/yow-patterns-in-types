@@ -50,13 +50,10 @@ object Warmup {
    * scala> length(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def length[A](xs: List[A]): Int =
-    xs match {
-      case Nil =>
-        0
-      case y :: ys =>
-        1 + length(ys)
-    }
+  def length[A](xs: List[A]): Int = xs match {
+    case _ :: tail => 1 + length(tail)
+    case Nil => 0
+  }
 
 
   /*
@@ -81,7 +78,7 @@ object Warmup {
    * resX: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8)
    */
   def append[A](x: List[A], y: List[A]): List[A] =
-    ???
+    x.foldRight(y)((el, acc) => el :: acc)
 
   /*
    * Exercise: 0.2:
@@ -100,7 +97,7 @@ object Warmup {
    *     not infer what you mean.
    */
   def map[A, B](xs: List[A])(f: A => B): List[B] =
-    ???
+    xs.foldRight(Nil : List[B]) ((el, acc) => f(el) :: acc)
 
   /*
    * Exercise: 0.3:
@@ -112,7 +109,7 @@ object Warmup {
    * resX: List[Int] = List(1, 2)
    */
   def filter[A](xs: List[A])(p: A => Boolean): List[A] =
-    ???
+    xs.foldRight(Nil : List[A])((el, acc) => if (p(el)) el :: acc else acc)
 
   /*
    * Exercise: 0.4:
@@ -133,7 +130,7 @@ object Warmup {
    *     not infer what you mean.
    */
   def reverse[A](xs: List[A]): List[A] =
-    ???
+    xs.foldLeft(Nil : List[A])((acc, el) => el :: acc)
 
   /*
    * *Challenge* Exercise: 0.5:
@@ -155,5 +152,8 @@ object Warmup {
    * ~~~ library hint: List[A]#min and List#max exist.
    */
   def ranges(xs: List[Int]): List[(Int, Int)] =
-    ???
+    xs.sorted.foldRight(Nil : List[(Int, Int)])((el, acc) => acc match {
+      case head :: tail if el + 1 == head._1 => (el, head._2) :: tail
+      case _ => (el, el) :: acc
+    })
 }
